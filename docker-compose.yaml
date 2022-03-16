@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+
+  postgresql-db:
+    restart: always
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_NAME=task-db
+      - POSTGRES_USER=task-user
+      - POSTGRES_PASSWORD=task-user-password
+    volumes:
+      - ./db:/var/lib/postgresql/data 
+    
+  redis:
+    image: redis
+    restart: always
+  
+  webapp:
+    restart: always
+    build: 
+      context: ./
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db:/app/messanger/db
+    command: bash -c 'python ./messanger/manage.py makemigrations && python ./messanger/manage.py migrate --noinput && python ./messanger/manage.py collectstatic --noinput && cd messanger && gunicorn messanger.wsgi:application --bind 0.0.0.0:8000'
+    
+  worker:
+    restart: always
+    build: 
+      context: ./
+    volumes:
+      - ./db:/app/messanger/db
+    command: ['celery', '--workdir=./messanger', '-A', 'messanger', 'worker', '-l', 'info']
+
+  celery-beats:
+    restart: always
+    build: 
+      context: ./
+    volumes:
+      - ./db:/app/messanger/db
+      - ./db:/var/lib/postgresql/data 
+    command: ['celery', '--workdir=./messanger', '-A', 'messanger', 'beat', '-l', 'INFO','--scheduler','django_celery_beat.schedulers:DatabaseScheduler']
