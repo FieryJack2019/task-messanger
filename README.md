@@ -2,8 +2,8 @@
 
 ## Документация
 # Сборка
-  * Клонирование репозитория git clone https://github.com/FieryJack2019/task-messanger
-  * Сборка докер образа docker-compose up -d --build
+  * Клонируем репозитория git clone https://github.com/FieryJack2019/task-messanger
+  * Собираем докер образ docker-compose up -d --build
 
 # Настройка oAuth2
 1. Cоздание суперюзера
