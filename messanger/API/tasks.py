@@ -18,9 +18,7 @@ def confirmation_messages(token):
     for message in messages_review:
         is_confirmation = True
         black_list_word = [item.word.lower() for item in BlackList.objects.all()]
-        print(black_list_word)
         for word in message.message.lower().split():
-            print(word)
             if word in black_list_word:
                 is_confirmation = False
                 break
