@@ -3,7 +3,7 @@ import django
 import os
 
 django.setup()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "messanger.settings")
 
 
 @shared_task(name="confirmation_messages")
@@ -18,8 +18,9 @@ def confirmation_messages(token):
     for message in messages_review:
         is_confirmation = True
         black_list_word = [item.word.lower() for item in BlackList.objects.all()]
-
-        for word in message.message.lower():
+        print(black_list_word)
+        for word in message.message.lower().split():
+            print(word)
             if word in black_list_word:
                 is_confirmation = False
                 break

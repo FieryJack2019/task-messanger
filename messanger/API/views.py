@@ -26,7 +26,7 @@ class ConfirmationView(APIView):
     def post(self, request):
         message = Message.objects.filter(id=request.data['message_id']).first()
         if message:
-            if request.data['success']:
+            if request.data['success'] != 'False':
                 message.status = Message.CORRECT
             else:
                 message.status = Message.BLOCKED
